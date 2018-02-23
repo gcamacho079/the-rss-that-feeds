@@ -1,35 +1,35 @@
-'use strict';
+"use strict";
 
 var rssModel = {
   init: function init() {
     var MAX_ARTICLES = 2;
+    var CORS_HEADER = "https://cors-anywhere.herokuapp.com/";
     var articles = [];
-    $.when(rssModel.oshaCall(), rssModel.sunCall()).done(function (firstCall, secondCall) {
+    $.when(rssModel.ajaxCall(CORS_HEADER + "https://www.osha.gov/news/newsreleases.xml"), rssModel.ajaxCall(CORS_HEADER + "http://sunnewsreport.com/feed/")).done(function (firstCall, secondCall) {
       for (var i = 0; i < MAX_ARTICLES; i++) {
         articles.push(firstCall[0].getElementsByTagName('item')[i]);
         articles.push(secondCall[0].getElementsByTagName('item')[i]);
       }
-      console.log(articles[0]);
+      rssController.init(articles);
     }).fail(function () {
-      console.log("This didn't work");
+      rssController.handleError;
     });
   },
 
-  oshaCall: function oshaCall() {
+  ajaxCall: function ajaxCall(url) {
     return $.ajax({
       method: "GET",
       dataType: "XML",
-      url: "https://cors-anywhere.herokuapp.com/https://www.osha.gov/news/newsreleases.xml"
-    });
-  },
-
-  sunCall: function sunCall() {
-    return $.ajax({
-      method: "GET",
-      dataType: "XML",
-      url: "https://cors-anywhere.herokuapp.com/http://sunnewsreport.com/feed/"
+      url: url
     });
   }
+};
+
+var rssController = {
+  init: function init(articles) {
+    console.log(articles[0].title);
+  },
+  handleError: function handleError() {}
 };
 
 $(document).ready(rssModel.init);
