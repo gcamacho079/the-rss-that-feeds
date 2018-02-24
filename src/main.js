@@ -28,7 +28,14 @@ var rssModel = {
 
 var rssController = {
   init: (articles) => {
-    console.log(articles[0].title);
+    let articleObjects = [];
+    articles.forEach((article, index) => {
+      articles[index] = {
+        name: articles[index].getElementsByTagName("title")[0].childNodes[0].nodeValue,
+        url: articles[index].getElementsByTagName("link")[0].childNodes[0].nodeValue
+      }
+    });
+    console.log(articles);
   },
   handleError: () => {
 

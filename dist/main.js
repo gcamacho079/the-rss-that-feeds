@@ -27,16 +27,16 @@ var rssModel = {
 
 var rssController = {
   init: function init(articles) {
-    console.log(articles[0].title);
+    var articleObjects = [];
+    articles.forEach(function (article, index) {
+      articles[index] = {
+        name: articles[index].getElementsByTagName("title")[0].childNodes[0].nodeValue,
+        url: articles[index].getElementsByTagName("link")[0].childNodes[0].nodeValue
+      };
+    });
+    console.log(articles);
   },
   handleError: function handleError() {}
 };
 
 $(document).ready(rssModel.init);
-
-/*articles.push({
-"src": "hello" + url,
-"name": xml.getElementsByTagName('item')[i].children.title,
-"url": xml.getElementsByTagName('item')[i].children.link
-});*/
-//console.log(xml.getElementsByTagName('item')[0].children);
