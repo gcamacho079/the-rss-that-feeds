@@ -3,10 +3,11 @@ var rssModel = {
     const MAX_ARTICLES = 2;
     const CORS_HEADER = "https://cors-anywhere.herokuapp.com/";
     let articles = [];
-    $.when(
-      rssModel.ajaxCall(CORS_HEADER + "https://www.osha.gov/news/newsreleases.xml"),
-      rssModel.ajaxCall(CORS_HEADER + "http://sunnewsreport.com/feed/")
-    ).done(function(firstCall, secondCall) {
+    let oshaCall = rssModel.ajaxCall(CORS_HEADER + "https://www.osha.gov/news/newsreleases.xml");
+    let sunCall = rssModel.ajaxCall(CORS_HEADER + "http://sunnewsreport.com/feed/");
+
+    $.when(oshaCall, sunCall)
+    .done(function(firstCall, secondCall) {
       for (let i = 0; i < MAX_ARTICLES; i ++) {
         articles.push(firstCall[0].getElementsByTagName("item")[i]);
         articles.push(secondCall[0].getElementsByTagName("item")[i]);
@@ -21,7 +22,12 @@ var rssModel = {
     return $.ajax({
       method: "GET",
       dataType: "XML",
-      url: url
+      url: url,
+      statusCode: {
+        404: function() {
+          rssController.handleError();
+        }
+      }
     });
   }
 }
